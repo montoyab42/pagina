@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora de Paneles Solares</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Calculadora de Paneles Solares by Ivan Montya Barrera</h1>
+      <p class="subtitle" id="subtitulo">Análisis para Acámbaro, Guanajuato - Julio</p>
+      <label for="ciudadMesSelect">Selecciona ciudad y mes:</label>
+      <select id="ciudadMesSelect">
+        <option value="acambaro-julio">Acámbaro, Guanajuato - Julio</option>
+        <option value="merida-mayo">Mérida, Yucatán - Mayo</option>
+        <option value="cdmx-diciembre">CDMX - Diciembre</option>
+        <option value="morelia-julio">Morelia, Michoacán - Julio</option>
+      </select>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>📄 Subir Recibo de CFE</h2>
+        <input type="file" id="cfeInput" accept="image/*" />
+        <p id="cfeResultado"></p>
+      </div>
+
+      <div class="card">
+        <h2>🌞 Subir Datos de Radiación (.csv)</h2>
+        <input type="file" id="csvInput" accept=".csv" />
+        <p id="csvInfo"></p>
+      </div>
+
+      <div class="card">
+        <h2>🔌 Consumo Diario</h2>
+        <canvas id="consumoChart"></canvas>
+      </div>
+      <div class="card">
+        <h2>🌞 Radiación Solar</h2>
+        <canvas id="radiacionChart"></canvas>
+      </div>
+      <div class="card">
+        <h2>⚡ Generación por Panel</h2>
+        <canvas id="generacionChart"></canvas>
+      </div>
+      <div class="card">
+        <h2>🔋 Paneles Necesarios</h2>
+        <canvas id="panelesChart"></canvas>
+      </div>
+      <div class="card">
+        <h2>📊 Probabilidad de Cobertura</h2>
+        <input type="range" id="panelSlider" min="1" max="20" value="5" />
+        <p><strong>Paneles seleccionados:</strong> <span id="panelCount">5</span></p>
+        <p id="coberturaText"></p>
+      </div>
+      <div class="card">
+        <h2>📈 Resumen Estadístico</h2>
+        <pre id="resumen"></pre>
+      </div>
+      <div class="card">
+        <h2>💰 Análisis Económico</h2>
+        <label for="panelEconomico">Número de paneles:</label>
+        <input type="number" id="panelEconomico" min="1" max="20" value="5">
+        <p id="costeTexto"></p>
+        <label>
+          <input type="checkbox" id="bateriaCheckbox" />
+          Incluir batería (10 kWh, $20,000 MXN)
+        </label>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

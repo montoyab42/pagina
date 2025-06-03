@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Combinado</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <button onclick="mostrarSeccion('paneles')">Paneles</button>
+        <button onclick="mostrarSeccion('urna')">Urna</button>
+    </nav>
+
+    <div id="paneles" class="seccion">
+        <!DOCTYPE html>
+<html lang="es">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora de Paneles Solares</title>
@@ -12,7 +27,7 @@
 <body>
   <main class="container">
     <header>
-      <h1>Calculadora de Paneles Solares by Ivan Montya Barrera</h1>
+      <h1>Calculadora de Paneles Solares</h1>
       <p class="subtitle" id="subtitulo">Análisis para Acámbaro, Guanajuato - Julio</p>
       <label for="ciudadMesSelect">Selecciona ciudad y mes:</label>
       <select id="ciudadMesSelect">
@@ -76,5 +91,57 @@
   </main>
 
   <script src="script.js"></script>
+</body>
+</html>
+    </div>
+
+    <div id="urna" class="seccion" style="display: none;">
+        <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Distribución de Probabilidad con Urna</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Distribución de la Suma de Pelotas en una Urna</h1>
+    <div class="controls">
+      <label for="numBalls">Número de pelotas:</label>
+      <input type="number" id="numBalls" min="2" max="20" value="4" />
+      <label for="reemplazo">¿Con reemplazo?</label>
+      <input type="checkbox" id="reemplazo" />
+      <button onclick="actualizarUrna()">Calcular</button>
+    </div>
+
+    <div id="pasoAPaso" class="paso-aplicado"></div>
+
+    <h2>Tabla de Probabilidades</h2>
+    <table id="tablaResultados"></table>
+    <button id="descargarBtn">Descargar CSV</button>
+
+    <div class="graficos">
+      <div class="grafico">
+        <h3>Histograma P(Z = z)</h3>
+        <canvas id="histograma"></canvas>
+      </div>
+      <div class="grafico">
+        <h3>Función de Distribución F(Z ≤ z)</h3>
+        <canvas id="cdf"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
+
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

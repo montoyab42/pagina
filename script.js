@@ -1,3 +1,10 @@
+
+function mostrarSeccion(seccionId) {
+    document.querySelectorAll('.seccion').forEach(seccion => {
+        seccion.style.display = 'none';
+    });
+    document.getElementById(seccionId).style.display = 'block';
+}
 // VARIABLES GLOBALES
 let eficiencia = 0.18;
 let perdidas = 0.15;
@@ -179,4 +186,82 @@ document.getElementById("csvInput").addEventListener("change", (e) => {
       }
     }
   });
+});
+
+
+function actualizarUrna() {
+  const num = parseInt(document.getElementById("numBalls").value);
+  const conReemplazo = document.getElementById("reemplazo").checked;
+  const combinaciones = [];
+  const conteo = {};
+
+  for (let i = 1; i <= num; i++) {
+    for (let j = conReemplazo ? 1 : i + 1; j <= num; j++) {
+      const suma = i + j;
+      combinaciones.push([i, j]);
+      conteo[suma] = (conteo[suma] || 0) + 1;
+    }
+  }
+
+  const total = combinaciones.length;
+  const tabla = document.getElementById("tablaResultados");
+  tabla.innerHTML = `
+    <tr><th>Combinación</th><th>Suma (Z)</th><th>Probabilidad</th></tr>
+    ${combinaciones.map(([a, b]) => {
+      const z = a + b;
+      const prob = (1 / total).toFixed(3);
+      return `<tr><td>{${a}, ${b}}</td><td>${z}</td><td>${prob}</td></tr>`;
+    }).join('')}
+  `;
+
+  const pasoDiv = document.getElementById("pasoAPaso");
+  let desarrollo = `<p>Total de combinaciones posibles: ${total}</p>`;
+  desarrollo += "<p>Se calcula \( P(Z = z) = \frac{\text{número de casos favorables}}{\text{total de casos posibles}} \)</p>";
+  desarrollo += "<ul>";
+  for (let z in conteo) {
+    desarrollo += `<li>\( P(Z = ${z}) = \frac{${conteo[z]}}{${total}} = ${(conteo[z]/total).toFixed(3)} \)</li>`;
+  }
+  desarrollo += "</ul>";
+  pasoDiv.innerHTML = desarrollo;
+  MathJax.typeset();
+
+  const histCtx = document.getElementById("histograma").getContext("2d");
+  const cdfCtx = document.getElementById("cdf").getContext("2d");
+  const etiquetas = Object.keys(conteo).map(Number).sort((a,b)=>a-b);
+  const valores = etiquetas.map(k => conteo[k] / total);
+  const acumulada = valores.reduce((acc, val) => {
+    acc.push((acc.length ? acc[acc.length - 1] : 0) + val);
+    return acc;
+  }, []);
+
+  if (window.histChart) window.histChart.destroy();
+  if (window.cdfChart) window.cdfChart.destroy();
+
+  window.histChart = new Chart(histCtx, {
+    type: "bar",
+    data: {
+      labels: etiquetas,
+      datasets: [{ label: "P(Z=z)", data: valores, backgroundColor: "#007bff" }]
+    }
+  });
+
+  window.cdfChart = new Chart(cdfCtx, {
+    type: "line",
+    data: {
+      labels: etiquetas,
+      datasets: [{ label: "F(Z≤z)", data: acumulada, borderColor: "#28a745", fill: false }]
+    }
+  });
+}
+
+document.getElementById("descargarBtn").addEventListener("click", () => {
+  const filas = Array.from(document.querySelectorAll("#tablaResultados tr"));
+  const csv = filas.map(row => Array.from(row.children).map(cell => cell.textContent).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tabla_probabilidades.csv";
+  a.click();
+  URL.revokeObjectURL(url);
 });

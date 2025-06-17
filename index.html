@@ -3,144 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto Combinado</title>
+    <title>Simulador de Distribuciones Probabilísticas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav>
-        <button onclick="mostrarSeccion('paneles')">Paneles</button>
-        <button onclick="mostrarSeccion('urna')">Urna</button>
-    </nav>
+    <div class="loading-screen" id="loading-screen">
+        <div class="spinner"></div>
+        <p>Cargando módulos estadísticos...</p>
+    </div>
 
-    <div id="paneles" class="seccion">
-        <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Paneles Solares</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
-  <link rel="stylesheet" href="estilos.css">
-</head>
-<body>
-  <main class="container">
-    <header>
-      <h1>Calculadora de Paneles Solares</h1>
-      <p class="subtitle" id="subtitulo">Análisis para Acámbaro, Guanajuato - Julio</p>
-      <label for="ciudadMesSelect">Selecciona ciudad y mes:</label>
-      <select id="ciudadMesSelect">
-        <option value="acambaro-julio">Acámbaro, Guanajuato - Julio</option>
-        <option value="merida-mayo">Mérida, Yucatán - Mayo</option>
-        <option value="cdmx-diciembre">CDMX - Diciembre</option>
-        <option value="morelia-julio">Morelia, Michoacán - Julio</option>
-      </select>
+    <header class="header-academico">
+        <div class="header-content">
+            <h1><i class="fas fa-chart-line"></i> Simulador de Distribuciones</h1>
+            <p class="subtitle">Herramienta profesional para análisis probabilístico</p>
+        </div>
     </header>
+    
+    <main>
+        <section class="card">
+            <div class="card-header with-icon">
+                <i class="fas fa-sliders-h"></i>
+                <h2>Configuración de la Simulación</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="distribucion-select"><i class="fas fa-project-diagram"></i> Distribución:</label>
+                    <select id="distribucion-select" class="form-control">
+                        <option value="">-- Seleccione --</option>
+                        <option value="uniforme">Uniforme Discreta</option>
+                        <option value="binomial">Binomial</option>
+                        <option value="poisson">Poisson</option>
+                        <option value="hipergeometrica">Hipergeométrica</option>
+                    </select>
+                </div>
+            </div>
+        </section>
 
-    <section class="grid">
-      <div class="card">
-        <h2>📄 Subir Recibo de CFE</h2>
-        <input type="file" id="cfeInput" accept="image/*" />
-        <p id="cfeResultado"></p>
-      </div>
+        <section class="card" id="parametros-section">
+            <!-- Generado por JavaScript -->
+        </section>
 
-      <div class="card">
-        <h2>🌞 Subir Datos de Radiación (.csv)</h2>
-        <input type="file" id="csvInput" accept=".csv" />
-        <p id="csvInfo"></p>
-      </div>
+        <section class="card">
+            <div class="card-header with-icon">
+                <i class="fas fa-book"></i>
+                <h2>Fundamento Teórico</h2>
+            </div>
+            <div class="card-body">
+                <div id="formula-container" class="formula-box"></div>
+                <div id="descripcion-dist" class="theory-desc"></div>
+            </div>
+        </section>
 
-      <div class="card">
-        <h2>🔌 Consumo Diario</h2>
-        <canvas id="consumoChart"></canvas>
-      </div>
-      <div class="card">
-        <h2>🌞 Radiación Solar</h2>
-        <canvas id="radiacionChart"></canvas>
-      </div>
-      <div class="card">
-        <h2>⚡ Generación por Panel</h2>
-        <canvas id="generacionChart"></canvas>
-      </div>
-      <div class="card">
-        <h2>🔋 Paneles Necesarios</h2>
-        <canvas id="panelesChart"></canvas>
-      </div>
-      <div class="card">
-        <h2>📊 Probabilidad de Cobertura</h2>
-        <input type="range" id="panelSlider" min="1" max="20" value="5" />
-        <p><strong>Paneles seleccionados:</strong> <span id="panelCount">5</span></p>
-        <p id="coberturaText"></p>
-      </div>
-      <div class="card">
-        <h2>📈 Resumen Estadístico</h2>
-        <pre id="resumen"></pre>
-      </div>
-      <div class="card">
-        <h2>💰 Análisis Económico</h2>
-        <label for="panelEconomico">Número de paneles:</label>
-        <input type="number" id="panelEconomico" min="1" max="20" value="5">
-        <p id="costeTexto"></p>
-        <label>
-          <input type="checkbox" id="bateriaCheckbox" />
-          Incluir batería (10 kWh, $20,000 MXN)
-        </label>
-      </div>
-    </section>
-  </main>
+        <div class="action-buttons">
+            <button id="calcular-btn" class="btn btn-primary">
+                <i class="fas fa-calculator"></i> Calcular Probabilidad
+            </button>
+            <button id="limpiar-btn" class="btn btn-outline">
+                <i class="fas fa-broom"></i> Limpiar
+            </button>
+        </div>
 
-  <script src="script.js"></script>
-</body>
-</html>
-    </div>
+        <section class="card">
+            <div class="card-header with-icon">
+                <i class="fas fa-chart-bar"></i>
+                <h2>Análisis de Resultados</h2>
+            </div>
+            <div class="card-body">
+                <div id="resultado-container" class="resultado-box"></div>
+                <div id="pasos-container" class="pasos-box"></div>
+                <div class="chart-container">
+                    <canvas id="dist-chart"></canvas>
+                </div>
+                <div class="chart-controls">
+                    <button id="zoom-in" class="btn btn-sm btn-outline"><i class="fas fa-search-plus"></i></button>
+                    <button id="zoom-out" class="btn btn-sm btn-outline"><i class="fas fa-search-minus"></i></button>
+                    <button id="reset-zoom" class="btn btn-sm btn-outline"><i class="fas fa-sync-alt"></i></button>
+                    <button id="export-chart" class="btn btn-sm btn-outline"><i class="fas fa-download"></i> Exportar</button>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <div id="urna" class="seccion" style="display: none;">
-        <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Distribución de Probabilidad con Urna</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-  <div class="container">
-    <h1>Distribución de la Suma de Pelotas en una Urna</h1>
-    <div class="controls">
-      <label for="numBalls">Número de pelotas:</label>
-      <input type="number" id="numBalls" min="2" max="20" value="4" />
-      <label for="reemplazo">¿Con reemplazo?</label>
-      <input type="checkbox" id="reemplazo" />
-      <button onclick="actualizarUrna()">Calcular</button>
-    </div>
-
-    <div id="pasoAPaso" class="paso-aplicado"></div>
-
-    <h2>Tabla de Probabilidades</h2>
-    <table id="tablaResultados"></table>
-    <button id="descargarBtn">Descargar CSV</button>
-
-    <div class="graficos">
-      <div class="grafico">
-        <h3>Histograma P(Z = z)</h3>
-        <canvas id="histograma"></canvas>
-      </div>
-      <div class="grafico">
-        <h3>Función de Distribución F(Z ≤ z)</h3>
-        <canvas id="cdf"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <script src="main.js"></script>
-</body>
-</html>
-
-    </div>
+    <footer class="footer-academico">
+        <p>Simulador Estadístico - Probabilidad y estadistica, profesor J. Jesus Rico Melgoza</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
